@@ -107,4 +107,21 @@ public class DealsStorage {
 
         return getMaxIncomeValueString(managersIncomes);
     }
+
+    public String getMostProfitableMonthsStringForLastYear() {
+        Map<String, Integer> monthsIncomes = new HashMap<>();
+        var lastYearDeals = getDealsAfterDate(LocalDate.now().minusYears(1));
+
+        if (lastYearDeals.isEmpty()) {
+            return "За прошлый год не было совершено ни одной сделки";
+        }
+
+        for (var deal : lastYearDeals) {
+            String month = deal.getDate().getMonth().toString();
+            Integer monthIncome = monthsIncomes.get(month);
+            monthsIncomes.put(month, deal.getAmount() + (monthIncome != null ? monthIncome : 0));
+        }
+
+        return getMaxIncomeValueString(monthsIncomes);
+    }
 }
