@@ -12,13 +12,14 @@ import java.util.logging.Logger;
 Менеджер;покупатель;сумма сделки;дата обслуживания
 1) Необходимо найти самого эффективного менеджера за последний месяц
 2) Собрать статистику по доходу от каждого клиента
+3) Найти самый прибыльный месяц за последний год
 */
 
 public class Main {
 
     private static final Logger logger = Logger.getLogger(Main.class.getName());
 
-    private static final int END_MENU_ITEM = 3;
+    private static final int END_MENU_ITEM = 4;
 
     private static final String DATA_PATH = "src/main/resources/data.txt";
 
@@ -35,6 +36,7 @@ public class Main {
             switch (selectedMenuItem) {
                 case 1 -> System.out.println(dealsStorage.getMostEffectiveManagersStringForLastMonth());
                 case 2 -> System.out.println(dealsStorage.getCustomersIncomeStatisticString());
+                case 3 -> System.out.println(dealsStorage.getMostProfitableMonthsStringForLastYear());
             }
             waitUser();
         } while (selectedMenuItem != END_MENU_ITEM);
@@ -45,7 +47,8 @@ public class Main {
     public static void printMenu() {
         System.out.println("1: Найти самого эффективного менеджера за последний месяц");
         System.out.println("2: Собрать статистику по доходу от каждого клиента");
-        System.out.println("3: Выход");
+        System.out.println("3: Найти самый прибыльный месяц за последний год");
+        System.out.println("4: Выход");
     }
 
     public static void waitUser() {
