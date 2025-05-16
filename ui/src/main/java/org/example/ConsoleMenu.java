@@ -1,33 +1,23 @@
 package org.example;
 
-import deals.DealsStorage;
-import input.ConsoleInput;
-
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-/*
-Дан файл, в котором содержится информация о сделках в следующем формате:
-Менеджер;покупатель;сумма сделки;дата обслуживания
-1) Необходимо найти самого эффективного менеджера за последний месяц
-2) Собрать статистику по доходу от каждого клиента
-3) Найти самый прибыльный месяц за последний год
-*/
+public class ConsoleMenu {
+    final String dataFilePath;
 
-public class Main {
-
-    private static final Logger logger = Logger.getLogger(Main.class.getName());
-
+    private static final Logger logger = LogManager.getLogger(ConsoleMenu.class);
     private static final int END_MENU_ITEM = 4;
 
-    private static final String DATA_PATH = "src/main/resources/data.txt";
 
-    public static void main(final String[] args) {
-        logger.log(Level.INFO, "Начало работы");
+    public ConsoleMenu(String dataFilePath) {
+        this.dataFilePath = dataFilePath;
+    }
 
+    public void run() {
         DealsStorage dealsStorage = new DealsStorage();
-        dealsStorage.addFromFile(DATA_PATH);
+        dealsStorage.addFromFile(dataFilePath);
 
         int selectedMenuItem;
         do {
@@ -40,23 +30,21 @@ public class Main {
             }
             waitUser();
         } while (selectedMenuItem != END_MENU_ITEM);
-
-        logger.log(Level.OFF, "Конец работы");
     }
 
-    public static void printMenu() {
+    private void printMenu() {
         System.out.println("1: Найти самого эффективного менеджера за последний месяц");
         System.out.println("2: Собрать статистику по доходу от каждого клиента");
         System.out.println("3: Найти самый прибыльный месяц за последний год");
         System.out.println("4: Выход");
     }
 
-    public static void waitUser() {
+    private void waitUser() {
         System.out.println("Введите <ENTER>");
         try {
             System.in.read();
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "wait press enter", e);
+            logger.error("Ошибка ожидания ввода пользователя", e);
         }
     }
 }

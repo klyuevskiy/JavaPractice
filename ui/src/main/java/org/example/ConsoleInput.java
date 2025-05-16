@@ -1,12 +1,12 @@
-package input;
+package org.example;
 
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class ConsoleInput {
 
-    private static final Logger logger = Logger.getLogger(ConsoleInput.class.getName());
+    private static final Logger logger = LogManager.getLogger(ConsoleInput.class);
 
     private ConsoleInput() {
 
@@ -26,11 +26,11 @@ public class ConsoleInput {
                 if (number >= leftBound && number <= rightBound) {
                     isCorrectInput = true;
                 } else {
-                    logger.log(Level.WARNING, String.format("Число не в диапазоне [%d; %d]", leftBound, rightBound));
+                    logger.warn(String.format("Число не в диапазоне [%d; %d]", leftBound, rightBound));
                 }
             } catch (Exception e) {
                 scanner.nextLine();
-                logger.log(Level.SEVERE, "Ошибка ввода", e);
+                logger.error("Ошибка ввода", e);
             }
         }
 
