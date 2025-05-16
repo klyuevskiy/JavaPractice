@@ -1,37 +1,38 @@
-package deals;
+package org.example;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class DealsStorage {
 
-    private static final Logger logger = Logger.getLogger(DealsStorage.class.getName());
+    private static final Logger logger = LogManager.getLogger(DealsStorage.class);
     private final List<Deal> deals = new ArrayList<>();
 
     public void addFromFile(String filePath) {
-        logger.log(Level.INFO, "Начало чтения файла");
+        logger.info("Начало чтения файла");
 
         try (var bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8))) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 Deal deal = Deal.parse(line);
                 if (deal == null) {
-                    logger.log(Level.SEVERE, "Ошибка парсинга сделки. Конец чтения файла");
+                    logger.error("Ошибка парсинга сделки. Конец чтения файла");
                     break;
                 }
                 deals.add(deal);
             }
         } catch (FileNotFoundException e) {
-            logger.log(Level.SEVERE, "Файл не найден", e);
+            logger.error("Файл не найден", e);
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Ошибка чтения файла", e);
+            logger.error("Ошибка чтения файла", e);
         }
 
-        logger.log(Level.INFO, "Конец чтения файла");
+        logger.info("Конец чтения файла");
     }
 
     private List<Deal> getDealsAfterDate(LocalDate date) {

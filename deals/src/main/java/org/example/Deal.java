@@ -1,14 +1,15 @@
-package deals;
+package org.example;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Deal {
 
-    private static final Logger logger = Logger.getLogger(Deal.class.getName());
+    private static final Logger logger = LogManager.getLogger(Deal.class);
     private final String managerName;
     private final String customerName;
     private final int amount;
@@ -69,9 +70,9 @@ public class Deal {
             String[] parts = text.split(";");
             return new Deal(parts[0], parts[1], Integer.parseInt(parts[2]), LocalDate.parse(parts[3]));
         } catch (NumberFormatException e) {
-            logger.log(Level.SEVERE, "Amount parse exception", e);
+            logger.error("Ошибка парсинга суммы сделки", e);
         } catch (DateTimeParseException e) {
-            logger.log(Level.SEVERE, "Date parse exception", e);
+            logger.error("Ошибка парсинга даты сделки", e);
         }
         return null;
     }
