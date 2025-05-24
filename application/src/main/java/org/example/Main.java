@@ -21,7 +21,10 @@ public class Main {
         logger.info("Начало работы");
 
         try {
-            ConsoleMenu menu = new ConsoleMenu(DATA_PATH);
+            DealsStorage storage = new DealsStorage();
+            storage.addFromFile(DATA_PATH);
+            DealsHandler handler = new DealsHandler(storage);
+            ConsoleMenu menu = new ConsoleMenu(handler);
             menu.run();
         } catch (Exception e) {
             logger.error("Необработанная ошибка", e);
