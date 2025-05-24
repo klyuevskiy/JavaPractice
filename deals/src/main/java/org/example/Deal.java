@@ -71,9 +71,13 @@ public class Deal {
             return new Deal(parts[0], parts[1], Integer.parseInt(parts[2]), LocalDate.parse(parts[3]));
         } catch (NumberFormatException e) {
             logger.error("Ошибка парсинга суммы сделки", e);
+            throw e;
         } catch (DateTimeParseException e) {
             logger.error("Ошибка парсинга даты сделки", e);
+            throw e;
+        } catch (ArrayIndexOutOfBoundsException e) {
+            logger.error("Неверное количество аргументов");
+            throw e;
         }
-        return null;
     }
 }

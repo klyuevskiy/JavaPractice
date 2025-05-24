@@ -1,128 +1,44 @@
 package org.example;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DealsStorage {
-
     private static final Logger logger = LogManager.getLogger(DealsStorage.class);
     private final List<Deal> deals = new ArrayList<>();
 
-    public void addFromFile(String filePath) {
+    public List<Deal> getDeals() {
+        return deals;
+    }
+
+    public void addFromFile(String filePath) throws IOException {
         logger.info("Начало чтения файла");
 
         try (var bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(filePath), StandardCharsets.UTF_8))) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 Deal deal = Deal.parse(line);
-                if (deal == null) {
-                    logger.error("Ошибка парсинга сделки. Конец чтения файла");
-                    break;
-                }
                 deals.add(deal);
             }
         } catch (FileNotFoundException e) {
             logger.error("Файл не найден", e);
+            throw e;
         } catch (IOException e) {
             logger.error("Ошибка чтения файла", e);
+            throw e;
+        } catch (Exception e) {
+            logger.error("Ошибка парсинга сделки. Конец чтения файла");
+            throw e;
         }
 
         logger.info("Конец чтения файла");
-    }
-
-    private List<Deal> getDealsAfterDate(LocalDate date) {
-        List<Deal> dealsAfterDate = new ArrayList<>();
-        for (var deal : deals) {
-            if (!deal.getDate().isBefore(date)) {
-                dealsAfterDate.add(deal);
-            }
-        }
-        return dealsAfterDate;
-    }
-
-    private void putMapEntryOnStringBuilder(StringBuilder stringBuilder, Map.Entry<String, Integer> entry) {
-        stringBuilder
-                .append(entry.getKey())
-                .append(" : ")
-                .append(entry.getValue())
-                .append("\n");
-    }
-
-    private String getMaxIncomeValueString(Map<String, Integer> incomesStatistic) {
-        int maxIncome = -1;
-
-        for (var incomeEntry : incomesStatistic.entrySet()) {
-            if (incomeEntry.getValue() > maxIncome) {
-                maxIncome = incomeEntry.getValue();
-            }
-        }
-
-        StringBuilder maxIncomesEntriesStringBuilder = new StringBuilder();
-
-        for (var incomeEntry : incomesStatistic.entrySet()) {
-            if (incomeEntry.getValue() == maxIncome) {
-                putMapEntryOnStringBuilder(maxIncomesEntriesStringBuilder, incomeEntry);
-            }
-        }
-
-        return maxIncomesEntriesStringBuilder.toString();
-    }
-
-    public String getCustomersIncomeStatisticString() {
-        if (deals.isEmpty()) {
-            return "Пока ещё не было совершено ни одной сделки";
-        }
-
-        Map<String, Integer> customersIncomeStatistic = new HashMap<>();
-
-        for (var deal : deals) {
-            Integer customerIncome = customersIncomeStatistic.get(deal.getCustomerName());
-            customersIncomeStatistic.put(deal.getCustomerName(), deal.getAmount() + (customerIncome != null ? customerIncome : 0));
-        }
-
-        StringBuilder customersIncomeStatisticsStringBuilder = new StringBuilder();
-
-        for (var customerIncome : customersIncomeStatistic.entrySet()) {
-            putMapEntryOnStringBuilder(customersIncomeStatisticsStringBuilder, customerIncome);
-        }
-        return customersIncomeStatisticsStringBuilder.toString();
-    }
-
-    public String getMostEffectiveManagersStringForLastMonth() {
-        HashMap<String, Integer> managersIncomes = new HashMap<>();
-        var lastMonthDeals = getDealsAfterDate(LocalDate.now().minusMonths(1));
-
-        if (lastMonthDeals.isEmpty()) {
-            return "За прошлый месяц не было совершено ни одной сделки";
-        }
-
-        for (var deal : lastMonthDeals) {
-            Integer managerIncome = managersIncomes.get(deal.getManagerName());
-            managersIncomes.put(deal.getManagerName(), deal.getAmount() + (managerIncome != null ? managerIncome : 0));
-        }
-
-        return getMaxIncomeValueString(managersIncomes);
-    }
-
-    public String getMostProfitableMonthsStringForLastYear() {
-        Map<String, Integer> monthsIncomes = new HashMap<>();
-        var lastYearDeals = getDealsAfterDate(LocalDate.now().minusYears(1));
-
-        if (lastYearDeals.isEmpty()) {
-            return "За прошлый год не было совершено ни одной сделки";
-        }
-
-        for (var deal : lastYearDeals) {
-            String month = deal.getDate().getMonth().toString();
-            Integer monthIncome = monthsIncomes.get(month);
-            monthsIncomes.put(month, deal.getAmount() + (monthIncome != null ? monthIncome : 0));
-        }
-
-        return getMaxIncomeValueString(monthsIncomes);
     }
 }

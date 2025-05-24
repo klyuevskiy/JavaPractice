@@ -1,32 +1,30 @@
 package org.example;
 
 import java.io.IOException;
+import java.time.LocalDate;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ConsoleMenu {
-    final String dataFilePath;
-
     private static final Logger logger = LogManager.getLogger(ConsoleMenu.class);
     private static final int END_MENU_ITEM = 4;
 
+    private final DealsHandler dealsHandler;
 
-    public ConsoleMenu(String dataFilePath) {
-        this.dataFilePath = dataFilePath;
+    ConsoleMenu(DealsHandler dealsHandler) {
+        this.dealsHandler = dealsHandler;
     }
 
     public void run() {
-        DealsStorage dealsStorage = new DealsStorage();
-        dealsStorage.addFromFile(dataFilePath);
-
         int selectedMenuItem;
         do {
             printMenu();
             selectedMenuItem = ConsoleInput.inputIntInRange("Выберите пункт", 1, END_MENU_ITEM);
             switch (selectedMenuItem) {
-                case 1 -> System.out.println(dealsStorage.getMostEffectiveManagersStringForLastMonth());
-                case 2 -> System.out.println(dealsStorage.getCustomersIncomeStatisticString());
-                case 3 -> System.out.println(dealsStorage.getMostProfitableMonthsStringForLastYear());
+                case 1 -> System.out.println(dealsHandler.getMostEffectiveManagersStringForLastMonth(LocalDate.now()));
+                case 2 -> System.out.println(dealsHandler.getCustomersIncomeStatisticString());
+                case 3 -> System.out.println(dealsHandler.getMostProfitableMonthsStringForLastYear(LocalDate.now()));
             }
             waitUser();
         } while (selectedMenuItem != END_MENU_ITEM);
