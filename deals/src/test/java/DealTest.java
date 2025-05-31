@@ -42,6 +42,13 @@ public class DealTest {
             amountAnother,
             date);
 
+    private static final Deal dealNotEqualManager = new Deal(
+        "Another managet",
+        customerName,
+        amount,
+        date
+    );
+
     @Test
     void getManagerNameTest() {
         assertEquals(managerName, deal.getManagerName());
@@ -83,6 +90,11 @@ public class DealTest {
     @Test
     void notEqualsTest() {
         assertNotEquals(deal, dealNotEqual);
+    }
+
+    @Test
+    void notEqualManagerTest() {
+        assertNotEquals(deal, dealNotEqualManager);
     }
 
     @Test
